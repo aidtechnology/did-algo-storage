@@ -26,8 +26,8 @@ deploy:
 
 ## run-provider: Start the storage provider server
 run-provider:
-	docker run -p 3000:3000 -it --rm algo-did-provider
+	docker run -p 3000:3000 -it --rm ghcr.io/aidtechnology/did-algo-provider
 
 ## build-provider: Build the DID provider image
 build-provider:
-	docker build -t algo-did-provider storage-provider/.
+	docker build -t ghcr.io/aidtechnology/did-algo-provider storage-provider/.

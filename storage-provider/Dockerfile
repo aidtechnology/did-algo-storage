@@ -9,4 +9,5 @@ RUN \
 
 EXPOSE 3000
 
-ENTRYPOINT [ "/usr/local/bin/npm", "run", "serve" ]
+ENTRYPOINT [ "/home/node/app/run.sh" ]
+
