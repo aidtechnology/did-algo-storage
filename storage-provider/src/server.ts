@@ -7,7 +7,7 @@ import {
   uploadDIDDocument,
   deleteDIDDocument,
   updateDIDDocument,
-} from "../../src/index";
+} from "./index";
 
 function errorMessage(error: unknown) {
   if (error instanceof Error) return error.message;
