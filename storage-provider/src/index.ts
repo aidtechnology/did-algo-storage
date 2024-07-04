@@ -31,6 +31,8 @@ export async function resolveDID(
 ): Promise<Buffer> {
   const splitDid = did.split(":");
 
+  const idxOffset = splitDid.length === 6 ? 0 : 1;
+
   if (splitDid[0] !== "did") {
     throw new Error(`invalid protocol, expected 'did', got ${splitDid[0]}`);
   }
@@ -38,24 +40,23 @@ export async function resolveDID(
     throw new Error(`invalid DID method, expected 'algo', got ${splitDid[1]}`);
   }
 
-  const splitID = splitDid[2].split("-");
+  const nameSpace = splitDid[3 - idxOffset];
 
-  let pubKey: Uint8Array;
-  try {
-    pubKey = algosdk.decodeAddress(splitID[0]).publicKey;
-  } catch (e) {
-    throw new Error(
-      `invalid public key, expected Algorand address, got ${splitID[0]}`
-    );
+  if (nameSpace !== "app") {
+    throw new Error(`invalid namespace, expected 'app', got ${nameSpace}`);
   }
+
+  const pubKey = Buffer.from(splitDid[5 - idxOffset], "hex");
 
   let appID: bigint;
 
   try {
-    appID = BigInt(splitID[1]);
+    appID = BigInt(splitDid[4 - idxOffset]);
     algosdk.encodeUint64(appID);
   } catch (e) {
-    throw new Error(`invalid app ID, expected uint64, got ${splitID[1]}`);
+    throw new Error(
+      `invalid app ID, expected uint64, got ${splitDid[4 - idxOffset]}`
+    );
   }
 
   const appClient = new ApplicationClient(
@@ -448,4 +449,8 @@ export async function updateDIDDocument(
 ): Promise<Metadata> {
   await deleteDIDDocument(appID, pubKey, sender, algodClient);
   return uploadDIDDocument(data, appID, pubKey, sender, algodClient);
+}
+
+export function addrToPubkey(addr: string): string {
+  return Buffer.from(algosdk.decodeAddress(addr).publicKey).toString("hex");
 }

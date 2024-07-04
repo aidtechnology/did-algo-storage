@@ -11,6 +11,7 @@ import {
   uploadDIDDocument,
   deleteDIDDocument,
   updateDIDDocument,
+  addrToPubkey,
 } from "../src/index";
 
 jest.setTimeout(20000);
@@ -95,7 +96,7 @@ describe("Algorand DID", () => {
 
       // Reconstruct DID from several boxes
       const resolvedData: Buffer = await resolveDID(
-        `did:algo:${addr}-${appId}`,
+        `did:algo:custom:app:${appId}:${addrToPubkey(addr)}`,
         algodClient
       );
       expect(resolvedData.toString("hex")).toEqual(bigData.toString("hex"));
@@ -116,7 +117,7 @@ describe("Algorand DID", () => {
 
       // Reconstruct DID from several boxes
       const resolvedData: Buffer = await resolveDID(
-        `did:algo:${addr}-${appId}`,
+        `did:algo:custom:app:${appId}:${addrToPubkey(addr)}`,
         algodClient
       );
       expect(resolvedData.toString("hex")).toEqual(
@@ -131,7 +132,10 @@ describe("Algorand DID", () => {
 
       const addr = algosdk.encodeAddress(userKey);
       await expect(
-        resolveDID(`did:algo:${addr}-${appId}`, algodClient)
+        resolveDID(
+          `did:algo:custom:app:${appId}:${addrToPubkey(addr)}`,
+          algodClient
+        )
       ).rejects.toThrow();
     };
 
@@ -177,7 +181,7 @@ describe("Algorand DID", () => {
 
       const addr = algosdk.encodeAddress(updateDataUserKey);
       const resolvedData = await resolveDID(
-        `did:algo:${addr}-${appId}`,
+        `did:algo:custom:app:${appId}:${addrToPubkey(addr)}`,
         algodClient
       );
 

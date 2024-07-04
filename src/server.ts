@@ -31,6 +31,18 @@ async function runServer() {
   app.use(express.json());
   app.use(morgan("dev"));
 
+  const genesisHash = (await algod.getTransactionParams().do()).genesisHash;
+
+  let currentNetwork: string = "custom";
+
+  if (genesisHash === "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=") {
+    currentNetwork = "mainnet";
+  } else if (genesisHash === "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=") {
+    currentNetwork = "testnet";
+  } else if (genesisHash === "mFgazF+2uRS1tMiL9dsj01hJGySEmPN28B/TjjvpVW0=") {
+    currentNetwork = "betanet";
+  }
+
   // reachability check
   app.get("/v1/ping", (req: Request, res: Response) => {
     res.send({ pong: true });
@@ -52,7 +64,7 @@ async function runServer() {
   app.get("/v1/:addr/:appId", async (req: Request, res: Response) => {
     try {
       const box: Buffer = await resolveDID(
-        `did:algo:${req.params.addr}-${req.params.appId}`,
+        `did:algo:${currentNetwork}:app:${req.params.appId}:${req.params.addr}`,
         algod
       );
       res.send(decodeBox(box));
