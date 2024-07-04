@@ -5,7 +5,7 @@ import { ApplicationClient } from "@algorandfoundation/algokit-utils/types/app-c
 import { AppCallTransactionResult } from "@algorandfoundation/algokit-utils/types/app";
 // eslint-disable-next-line import/no-unresolved
 import { SuggestedParamsWithMinFee } from "algosdk/dist/types/types/transactions/base";
-import appSpec from "../contracts/artifacts/AlgoDID.json";
+import appSpec from "../artifacts/AlgoDID.json";
 
 const COST_PER_BYTE = 400;
 const COST_PER_BOX = 2500;
